@@ -37,9 +37,10 @@
     document.querySelectorAll('[data-signed-in]').forEach((el) => (el.hidden = !signedIn))
     document.querySelectorAll('[data-signed-out]').forEach((el) => (el.hidden = signedIn))
     document.querySelectorAll('[data-email]').forEach((el) => (el.textContent = signedIn ? pb.authStore.record.email : ''))
-    // Top nav chip: Sign in (to /register) or Dashboard.
+    // Links that become Dashboard once signed in (top nav chip, home Register button).
+    // data-account holds the signed-out label; empty means "Sign in".
     document.querySelectorAll('[data-account]').forEach((a) => {
-      a.textContent = signedIn ? 'Dashboard' : 'Sign in'
+      a.textContent = signedIn ? 'Dashboard' : a.dataset.account || 'Sign in'
       a.href = signedIn ? '/dashboard' : '/register'
     })
   }
