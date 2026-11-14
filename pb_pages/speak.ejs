@@ -25,7 +25,7 @@
       <label>About you <span class="opt">(optional)</span> <textarea name="bio" maxlength="1000" rows="3"></textarea></label>
       <label>Links <span class="opt">(optional: GitHub, site, past talks)</span> <input name="links" maxlength="500" /></label>
       <p class="hint">Only the PocketCon team sees proposals.</p>
-      <div class="actions"><button class="btn primary" type="submit">Submit proposal</button></div>
+      <div class="actions"><button class="btn primary" type="submit" data-submit>Submit proposal</button><a class="btn" href="/dashboard#talks" data-cancel hidden>Cancel</a></div>
       <p class="error" data-error hidden></p>
     </form>
   </div>
@@ -48,10 +48,32 @@
         : ''
     }
 
+    // Edit mode (/speak?edit=ID): speakers can change a proposal until it's accepted or declined.
+    const editId = new URLSearchParams(location.search).get('edit')
+    const locked = (p) => p.status === 'accepted' || p.status === 'declined'
+    const startEdit = async () => {
+      const p = await pb.collection('talk_proposals').getOne(editId)
+      if (locked(p)) {
+        mine.innerHTML = `<div class="ok"><p><b>${esc(p.title)}</b> has been ${p.status === 'accepted' ? 'accepted' : 'decided'}, so it can't be edited any more. Questions? Email <a href="mailto:ben@pockethost.io">ben@pockethost.io</a>.</p></div>`
+        form.hidden = true
+        return
+      }
+      for (const name of ['name', 'email', 'title', 'format', 'abstract', 'bio', 'links']) form.elements[name].value = p[name] || ''
+      document.querySelector('.page-title').textContent = 'Edit your talk'
+      form.querySelector('[data-submit]').textContent = 'Save changes'
+      form.querySelector('[data-cancel]').hidden = false
+      mine.innerHTML = ''
+    }
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault()
       const data = Object.fromEntries(new FormData(form))
       await run(form, async () => {
+        if (editId) {
+          await pb.collection('talk_proposals').update(editId, data)
+          location.href = '/dashboard#talks'
+          return
+        }
         await pb.collection('talk_proposals').create({ ...data, user: pb.authStore.record.id })
         form.reset()
         form.email.value = pb.authStore.record.email || ''
@@ -60,6 +82,13 @@
       })
     })
 
+    if (editId) {
+      startEdit().catch((err) => {
+        mine.innerHTML = `<p class="error">${esc(PocketCon.message(err))}</p>`
+        form.hidden = true
+      })
+      return
+    }
     load()
   })
 </script>
