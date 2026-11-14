@@ -6,7 +6,7 @@
   <div data-signed-in hidden>
     <p class="ok">You're registered as <b data-email></b>. See you on February 6.</p>
     <div class="actions">
-      <a class="btn primary" href="/offers">See attendee offers</a>
+      <a class="btn primary" href="/dashboard">Go to your dashboard</a>
       <a class="btn highlight" href="/speak">Propose a talk</a>
       <button class="btn" type="button" data-sign-out>Sign out</button>
     </div>
@@ -42,7 +42,7 @@
     const form = document.getElementById('auth-form')
     const goNext = () => {
       const next = new URLSearchParams(location.search).get('next')
-      location.href = next && next.startsWith('/') && !next.startsWith('//') ? next : '/offers'
+      location.href = next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard'
     }
 
     // Google / GitHub buttons appear only for providers enabled on the users collection (admin UI).

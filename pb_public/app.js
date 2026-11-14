@@ -37,8 +37,11 @@
     document.querySelectorAll('[data-signed-in]').forEach((el) => (el.hidden = !signedIn))
     document.querySelectorAll('[data-signed-out]').forEach((el) => (el.hidden = signedIn))
     document.querySelectorAll('[data-email]').forEach((el) => (el.textContent = signedIn ? pb.authStore.record.email : ''))
-    const account = document.querySelector('[data-account]')
-    if (account) account.textContent = signedIn ? 'Registered ✓' : 'Register'
+    // Top nav chip: Sign in (to /register) or Dashboard.
+    document.querySelectorAll('[data-account]').forEach((a) => {
+      a.textContent = signedIn ? 'Dashboard' : 'Sign in'
+      a.href = signedIn ? '/dashboard' : '/register'
+    })
   }
 
   pb.authStore.onChange(render)

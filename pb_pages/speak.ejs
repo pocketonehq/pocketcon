@@ -44,7 +44,7 @@
       mine.innerHTML = items.length
         ? `<div class="ok"><p>Thanks! We have ${items.length === 1 ? 'your proposal' : `your ${items.length} proposals`}:</p><ul>${items
             .map((p) => `<li><b>${esc(p.title)}</b> (${esc(p.format)})</li>`)
-            .join('')}</ul><p>We'll reach out by email. Want to propose another? Use the form below.</p></div>`
+            .join('')}</ul><p>Follow their status on <a href="/dashboard#talks">your dashboard</a>. Want to propose another? Use the form below.</p></div>`
         : ''
     }
 

@@ -302,3 +302,31 @@ button.btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
 .copy-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; color: var(--muted); }
 .copy-row code { color: var(--text); }
 .btn.copy { padding: 2px 10px; font-size: 0.8rem; }
+
+/* Top nav sign-in / dashboard chip */
+.nav.icons a.chip {
+  padding: 5px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.nav.icons a.chip:hover { border-color: var(--accent-2); color: var(--accent-2); }
+
+/* Attendee dashboard */
+.dashboard h2 { margin-top: 2.5rem; }
+.dashboard .actions { margin-bottom: 1rem; }
+.dashboard .offers { margin-bottom: 16px; }
+.status {
+  flex: none;
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--muted);
+  color: var(--muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+.status-accepted { border-color: #5fd38d; color: #5fd38d; }
+.status-waitlisted, .status-reviewing { border-color: var(--accent-2); color: var(--accent-2); }

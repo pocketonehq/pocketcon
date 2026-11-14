@@ -1,0 +1,100 @@
+<%
+  meta('title', 'Your PocketCon')
+  const event = ctx.resolve('event')
+%>
+<section class="page dashboard">
+  <h1 class="page-title">Your PocketCon</h1>
+
+  <div data-signed-out>
+    <p class="lede">Your registration, talk proposals and attendee offers, all in one place.</p>
+    <div class="actions"><a class="btn primary" href="/register?next=/dashboard">Sign in or register</a></div>
+  </div>
+
+  <div data-signed-in hidden>
+    <div class="ok">
+      <p>You're registered as <b data-email></b> for PocketCon 2027, <%= event.date %>, on Discord.</p>
+    </div>
+    <div class="actions">
+      <a class="btn" href="/pocketcon-2027.ics">Add to calendar</a>
+      <a class="btn" href="<%= event.discord %>">Join the Discord</a>
+      <button class="btn" type="button" data-sign-out>Sign out</button>
+    </div>
+
+    <h2 id="talks">Your talk proposals</h2>
+    <ul class="offers" id="talk-list" aria-live="polite"><li class="empty">Loading…</li></ul>
+    <div class="actions"><a class="btn highlight" href="/speak">Propose a talk</a></div>
+
+    <h2 id="offers">Attendee offers</h2>
+    <p class="note">Extras from our sponsors, each on its own site. Use the code at checkout.</p>
+    <ul class="offers" id="offer-list" aria-live="polite"><li class="empty">Loading…</li></ul>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('pocketcon:ready', () => {
+    const { pb, esc, message } = PocketCon
+    const talks = document.getElementById('talk-list')
+    const offers = document.getElementById('offer-list')
+    const formats = { talk: 'Talk', lightning: 'Lightning talk', demo: 'Live demo' }
+    const statuses = {
+      '': ['Submitted', 'We have it and will review it soon.'],
+      reviewing: ['In review', 'The team is looking at it.'],
+      accepted: ['Accepted', "You're on the program. We'll email you the details."],
+      waitlisted: ['Waitlisted', "We'd like it if a slot opens up."],
+      declined: ['Not this time', 'Thanks for proposing. We hope to see you in the chat.'],
+    }
+
+    const loadTalks = async () => {
+      const items = await pb.collection('talk_proposals').getFullList({ sort: '-created' })
+      talks.innerHTML = items.length
+        ? items
+            .map((p) => {
+              const [label, hint] = statuses[p.status || ''] || statuses['']
+              return `<li><div>
+                <h3>${esc(p.title)}</h3>
+                <p>${esc(formats[p.format] || p.format)} · sent ${esc(new Date(p.created).toLocaleDateString())}</p>
+                <p>${esc(hint)}</p>
+              </div><span class="status status-${esc(p.status || 'submitted')}">${esc(label)}</span></li>`
+            })
+            .join('')
+        : '<li class="empty">No proposals yet. Built something with PocketBase? The program has room for you.</li>'
+    }
+
+    const loadOffers = async () => {
+      const items = await pb.collection('offers').getFullList({ sort: 'sort,created' })
+      if (!items.length) {
+        offers.innerHTML = '<li class="empty">Offers are on the way. Check back soon.</li>'
+        return
+      }
+      offers.innerHTML = items
+        .map(
+          (o) => `<li>
+            <div>
+              <h3>${esc(o.title)}</h3>
+              ${o.description ? `<p>${esc(o.description)}</p>` : ''}
+              ${o.code ? `<p class="code">Code <button type="button" class="copy" data-code="${esc(o.code)}" title="Copy">${esc(o.code)}</button></p>` : ''}
+            </div>
+            <a class="btn highlight" href="${esc(o.url)}" target="_blank" rel="noopener">${esc(o.cta || 'Get it')}</a>
+          </li>`
+        )
+        .join('')
+      offers.querySelectorAll('.copy').forEach((b) =>
+        b.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(b.dataset.code)
+            b.classList.add('copied')
+            setTimeout(() => b.classList.remove('copied'), 1200)
+          } catch (_) {}
+        })
+      )
+    }
+
+    const load = () => {
+      if (!pb.authStore.isValid) return
+      loadTalks().catch((err) => (talks.innerHTML = `<li class="empty">${esc(message(err))}</li>`))
+      loadOffers().catch((err) => (offers.innerHTML = `<li class="empty">${esc(message(err))}</li>`))
+    }
+    pb.authStore.onChange(load)
+    load()
+  })
+</script>
