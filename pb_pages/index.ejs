@@ -1,10 +1,9 @@
 <%
   const event = ctx.resolve('event')
-  const agenda = [
-    { kind: 'Keynote', title: 'PocketBase in 2027', speaker: 'Speaker TBD' },
-    { kind: 'Presentation', title: 'PocketOne, the community fork of PocketBase', speaker: 'Ben Allfree, creator of PocketOne' },
-    { kind: 'Presentation', title: 'Extremely fast multisite hosting', speaker: 'Ben Allfree, creator of PocketHost' },
-  ]
+  // The keynote has no speaker yet; everything else is accepted talk proposals, in the admin's sort order.
+  const agenda = [{ kind: 'Keynote', title: 'PocketBase in 2027', speaker: 'Speaker TBD' }].concat(
+    ctx.resolve('talks').accepted(ctx.app)
+  )
 %>
 <section class="hero">
   <h1 class="visually-hidden">PocketCon 2027 · <%= event.date %> · free livestream on Discord</h1>
@@ -29,13 +28,15 @@
   <h2>Agenda</h2>
   <ol>
     <% agenda.forEach((item, i) => { %>
-      <li>
+      <li<%- item.id ? ' class="talk"' : '' %>>
+        <% if (item.id) { %><a href="/talks/<%= item.id %>"><% } %>
         <span class="num"><%= String(i + 1).padStart(2, '0') %></span>
         <div>
           <p class="tag"><%= item.kind %></p>
           <h3><%= item.title %></h3>
-          <p><%= item.speaker %></p>
+          <p><%= item.speaker %><%= item.headline ? `, ${item.headline}` : '' %></p>
         </div>
+        <% if (item.id) { %></a><% } %>
       </li>
     <% }) %>
     <li class="open-slot">

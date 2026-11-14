@@ -12,6 +12,7 @@
     <div id="mine"></div>
     <form class="form" id="talk-form">
       <label>Your name <input name="name" maxlength="120" required autocomplete="name" /></label>
+      <label>One-line intro <span class="opt">(optional, shown after your name on the agenda: "creator of PocketOne")</span> <input name="headline" maxlength="120" /></label>
       <label>Contact email <input name="email" type="email" required autocomplete="email" /></label>
       <label>Talk title <input name="title" minlength="3" maxlength="140" required /></label>
       <label>Format
@@ -58,7 +59,7 @@
         form.hidden = true
         return
       }
-      for (const name of ['name', 'email', 'title', 'format', 'abstract', 'bio', 'links']) form.elements[name].value = p[name] || ''
+      for (const name of ['name', 'headline', 'email', 'title', 'format', 'abstract', 'bio', 'links']) form.elements[name].value = p[name] || ''
       document.querySelector('.page-title').textContent = 'Edit your talk'
       form.querySelector('[data-submit]').textContent = 'Save changes'
       form.querySelector('[data-cancel]').hidden = false

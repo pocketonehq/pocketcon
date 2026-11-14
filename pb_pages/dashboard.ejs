@@ -58,7 +58,7 @@
                 <h3>${esc(p.title)}</h3>
                 <p>${esc(formats[p.format] || p.format)} · sent ${esc(new Date(p.created).toLocaleDateString())}</p>
                 <p>${esc(hint)}</p>
-                ${p.status === 'accepted' || p.status === 'declined' ? '' : `<p><a href="/speak?edit=${esc(p.id)}">Edit</a></p>`}
+                ${p.status === 'accepted' ? `<p><a href="/talks/${esc(p.id)}">See it on the agenda</a></p>` : p.status === 'declined' ? '' : `<p><a href="/speak?edit=${esc(p.id)}">Edit</a></p>`}
               </div><span class="status status-${esc(p.status || 'submitted')}">${esc(label)}</span></li>`
             })
             .join('')

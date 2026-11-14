@@ -348,3 +348,19 @@ button.btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
 .application dt { color: var(--muted); }
 .application dd { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 @media (max-width: 480px) { .application { grid-template-columns: 1fr; gap: 2px; } .application dd { margin-bottom: 8px; } }
+
+/* Agenda talks link to their pages */
+.agenda li.talk { padding: 0; }
+.agenda li.talk a { display: flex; gap: 18px; padding: 20px; width: 100%; color: var(--text); text-decoration: none; border-radius: 12px; }
+.agenda li.talk a:hover { background: rgba(255, 122, 69, 0.08); }
+.agenda li.talk a:hover h3 { color: var(--accent-2); }
+
+/* Talk page */
+.talk-page .tag { margin: 0 0 0.5rem; }
+.talk-page .page-title { margin-bottom: 0.75rem; }
+.talk-page .speaker { font-size: 1.15rem; margin: 0 0 0.25rem; }
+.talk-page .note { margin: 0 0 1rem; }
+.talk-page h2 { margin-top: 2.25rem; }
+.talk-page p { white-space: pre-line; }
+.talk-links { padding-left: 1.2rem; }
+.talk-page .actions { margin-top: 2.5rem; }
