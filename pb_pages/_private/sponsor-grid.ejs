@@ -1,11 +1,6 @@
 <%
-  const { presentedBy, sponsors } = ctx.resolve('sponsors')
+  const { sponsors } = ctx.resolve('sponsors')
 %>
-<div class="presented-by">
-  <p class="tag">Presented by</p>
-  <a href="<%= presentedBy.url %>"><b><%= presentedBy.name %></b></a>
-  <p><%= presentedBy.blurb %></p>
-</div>
 <ul class="sponsor-grid">
   <% sponsors.forEach((s) => { %>
     <li><a href="<%= s.url %>" rel="sponsored noopener"><b><%= s.name %></b><% if (s.blurb) { %><span><%= s.blurb %></span><% } %></a></li>
