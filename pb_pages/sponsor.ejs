@@ -1,7 +1,7 @@
 <% meta('title', 'Become a sponsor') %>
 <section class="page">
   <h1 class="page-title">Become a sponsor</h1>
-  <p class="lede">Tell us about your company and the offer you'd like to give PocketCon attendees. We'll get back to you.</p>
+  <p class="lede" id="intro">Tell us about your company and the offer you'd like to give PocketCon attendees. We'll get back to you.</p>
 
   <p class="note" data-signed-out><a href="/register?next=/sponsor">Sign in or register</a> (free) first, then come back to send this.</p>
 
@@ -29,10 +29,26 @@
     if (!pb.authStore.isValid) return
     form.elements.email.value = pb.authStore.record.email || ''
 
+    // One application per account: once sent, show it read-only instead of the form.
     const load = async () => {
       const items = await pb.collection('sponsor_inquiries').getFullList({ sort: '-created' })
+      form.hidden = items.length > 0
+      document.getElementById('intro').hidden = items.length > 0
       mine.innerHTML = items.length
-        ? `<div class="ok"><p>Thanks! We have your inquiry for <b>${items.map((i) => esc(i.company)).join('</b>, <b>')}</b>. Follow it on <a href="/dashboard#sponsorship">your dashboard</a>.</p></div>`
+        ? `<div class="ok"><p>Thanks! We have your inquiry for <b>${items.map((i) => esc(i.company)).join('</b>, <b>')}</b>. Follow it on <a href="/dashboard#sponsorship">your dashboard</a>.</p></div>` +
+          items
+            .map(
+              (i) => `<dl class="application">
+                <dt>Company</dt><dd>${esc(i.company)}</dd>
+                <dt>Website</dt><dd>${esc(i.website)}</dd>
+                <dt>Your name</dt><dd>${esc(i.name)}</dd>
+                <dt>Contact email</dt><dd>${esc(i.email)}</dd>
+                ${i.offer ? `<dt>Attendee offer</dt><dd>${esc(i.offer)}</dd>` : ''}
+                ${i.message ? `<dt>Anything else</dt><dd>${esc(i.message)}</dd>` : ''}
+                <dt>Sent</dt><dd>${esc(new Date(i.created).toLocaleDateString())}</dd>
+              </dl>`
+            )
+            .join('')
         : ''
     }
 

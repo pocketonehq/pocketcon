@@ -342,3 +342,9 @@ button.btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
 .sponsor-grid .open-slot b { color: var(--accent-2); }
 .status-confirmed { border-color: #5fd38d; color: #5fd38d; }
 .status-talking { border-color: var(--accent-2); color: var(--accent-2); }
+
+/* Read-only sponsorship application */
+.application { display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; margin: 1.25rem 0 2rem; padding: 18px 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; }
+.application dt { color: var(--muted); }
+.application dd { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 480px) { .application { grid-template-columns: 1fr; gap: 2px; } .application dd { margin-bottom: 8px; } }
