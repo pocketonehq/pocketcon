@@ -27,6 +27,10 @@
     <h2 id="offers">Attendee offers</h2>
     <p class="note">Extras from our sponsors, each on its own site. Use the code at checkout.</p>
     <ul class="offers" id="offer-list" aria-live="polite"><li class="empty">Loading…</li></ul>
+
+    <h2 id="sponsorship">Sponsorship</h2>
+    <ul class="offers" id="sponsor-list" aria-live="polite"><li class="empty">Loading…</li></ul>
+    <div class="actions"><a class="btn" href="/sponsor">Become a sponsor</a></div>
   </div>
 </section>
 
@@ -89,8 +93,32 @@
       )
     }
 
+    const sponsorStatuses = {
+      '': ['Received', "We have it and will get back to you."],
+      talking: ['In talks', "We're working out the details with you."],
+      confirmed: ['Confirmed', "You're a PocketCon sponsor. Thank you!"],
+      declined: ['Not this time', 'Thanks for reaching out.'],
+    }
+    const sponsorList = document.getElementById('sponsor-list')
+    const loadSponsorship = async () => {
+      const items = await pb.collection('sponsor_inquiries').getFullList({ sort: '-created' })
+      sponsorList.innerHTML = items.length
+        ? items
+            .map((s) => {
+              const [label, hint] = sponsorStatuses[s.status || ''] || sponsorStatuses['']
+              return `<li><div>
+                <h3>${esc(s.company)}</h3>
+                <p>Sent ${esc(new Date(s.created).toLocaleDateString())}</p>
+                <p>${esc(hint)}</p>
+              </div><span class="status status-${esc(s.status || 'received')}">${esc(label)}</span></li>`
+            })
+            .join('')
+        : '<li class="empty">Want your company in front of PocketBase developers? Sponsor PocketCon and give attendees an offer.</li>'
+    }
+
     const load = () => {
       if (!pb.authStore.isValid) return
+      loadSponsorship().catch((err) => (sponsorList.innerHTML = `<li class="empty">${esc(message(err))}</li>`))
       loadTalks().catch((err) => (talks.innerHTML = `<li class="empty">${esc(message(err))}</li>`))
       loadOffers().catch((err) => (offers.innerHTML = `<li class="empty">${esc(message(err))}</li>`))
     }

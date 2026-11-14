@@ -1,0 +1,53 @@
+<% meta('title', 'Become a sponsor') %>
+<section class="page">
+  <h1 class="page-title">Become a sponsor</h1>
+  <p class="lede">Tell us about your company and the offer you'd like to give PocketCon attendees. We'll get back to you.</p>
+
+  <p class="note" data-signed-out><a href="/register?next=/sponsor">Sign in or register</a> (free) first, then come back to send this.</p>
+
+  <div data-signed-in hidden>
+    <div id="mine"></div>
+    <form class="form" id="sponsor-form">
+      <label>Company <input name="company" maxlength="120" required autocomplete="organization" /></label>
+      <label>Website <input name="website" type="url" required placeholder="https://" /></label>
+      <label>Your name <input name="name" maxlength="120" required autocomplete="name" /></label>
+      <label>Contact email <input name="email" type="email" required autocomplete="email" /></label>
+      <label>Attendee offer <span class="opt">(optional: what could attendees get?)</span> <textarea name="offer" maxlength="1000" rows="3"></textarea></label>
+      <label>Anything else <span class="opt">(optional)</span> <textarea name="message" maxlength="2000" rows="4"></textarea></label>
+      <p class="hint">Only the PocketCon team sees this.</p>
+      <div class="actions"><button class="btn primary" type="submit">Send</button></div>
+      <p class="error" data-error hidden></p>
+    </form>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('pocketcon:ready', () => {
+    const { pb, esc, run } = PocketCon
+    const form = document.getElementById('sponsor-form')
+    const mine = document.getElementById('mine')
+    if (!pb.authStore.isValid) return
+    form.elements.email.value = pb.authStore.record.email || ''
+
+    const load = async () => {
+      const items = await pb.collection('sponsor_inquiries').getFullList({ sort: '-created' })
+      mine.innerHTML = items.length
+        ? `<div class="ok"><p>Thanks! We have your inquiry for <b>${items.map((i) => esc(i.company)).join('</b>, <b>')}</b>. Follow it on <a href="/dashboard#sponsorship">your dashboard</a>.</p></div>`
+        : ''
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const data = Object.fromEntries(new FormData(form))
+      await run(form, async () => {
+        await pb.collection('sponsor_inquiries').create({ ...data, user: pb.authStore.record.id })
+        form.reset()
+        form.elements.email.value = pb.authStore.record.email || ''
+        await load()
+        mine.scrollIntoView({ behavior: 'smooth' })
+      })
+    })
+
+    load()
+  })
+</script>

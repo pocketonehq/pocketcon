@@ -330,3 +330,20 @@ button.btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
 }
 .status-accepted { border-color: #5fd38d; color: #5fd38d; }
 .status-waitlisted, .status-reviewing { border-color: var(--accent-2); color: var(--accent-2); }
+
+/* Sponsors */
+.sponsors h2 { margin-top: 2.5rem; }
+.presented-by { margin-bottom: 1.25rem; }
+.presented-by .tag { margin: 0 0 6px; }
+.presented-by a { font-size: 1.6rem; text-decoration: none; color: var(--text); }
+.presented-by a:hover { color: var(--accent-2); }
+.presented-by p { margin: 4px 0 0; color: var(--muted); }
+.sponsor-grid { list-style: none; margin: 0 0 1.5rem; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); gap: 14px; }
+.sponsor-grid li { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; }
+.sponsor-grid li.open-slot { background: transparent; border: 2px dashed var(--accent); }
+.sponsor-grid a { display: flex; flex-direction: column; gap: 4px; justify-content: center; min-height: 6.5rem; padding: 18px 20px; color: var(--text); text-decoration: none; border-radius: 12px; }
+.sponsor-grid a:hover { background: rgba(255, 122, 69, 0.08); }
+.sponsor-grid span { color: var(--muted); font-size: 0.9rem; }
+.sponsor-grid .open-slot b { color: var(--accent-2); }
+.status-confirmed { border-color: #5fd38d; color: #5fd38d; }
+.status-talking { border-color: var(--accent-2); color: var(--accent-2); }
