@@ -37,6 +37,8 @@ On a PocketOne server with MCP (`/mcp`), `pb_hooks/mcp.pb.js` adds PocketCon too
 claude mcp add --transport http pocketcon http://127.0.0.1:8090/mcp
 ```
 
+`pb_hooks/scopes.pb.js` registers token scopes (`pocketcon:talks_read`, `pocketcon:talks_write`, and read/write for sponsors and offers). When an agent connects, the consent page offers **Full access** or **Only these**; a connection limited to `pocketcon:talks_read` sees only the tools that read talks, and anything else is refused. The collection rules don't change. Where the server has no API tokens the file does nothing.
+
 ## Deploy
 
 Pushes to `main` deploy with `npx pockethost@latest deploy pocketcon` (see `.github/workflows/deploy.yml`). The workflow needs a `POCKETHOST_TOKEN` secret: a PocketHost API token with write access to the `pocketcon` instance.
