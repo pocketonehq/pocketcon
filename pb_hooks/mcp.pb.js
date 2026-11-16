@@ -1,7 +1,7 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 // PocketCon's MCP tools (PocketOne ext/mcp). Each wraps a REST endpoint and runs as whoever signed in to /mcp, so the
-// collections' API rules decide what each caller gets: one tool per action, for speakers and the team alike.
+// collections' API rules decide what each caller gets: one tool per action, for speakers and organizers alike.
 // Skipped where the server has no MCP endpoint ($mcp undefined).
 
 if (typeof $mcp !== 'undefined') {
@@ -20,14 +20,14 @@ if (typeof $mcp !== 'undefined') {
     name: 'pocketcon_list_talks',
     title: 'List talks',
     description:
-      'List talk proposals, newest first. Speakers see their own; the PocketCon team sees all. Status "" means submitted.',
+      'List talk proposals, newest first. Speakers see their own; organizers (the PocketCon team) see all. Status "" means submitted.',
     method: 'GET',
     path: '/api/collections/talk_proposals/records',
     inputSchema: {
       type: 'object',
       properties: {
         status: { type: 'string', enum: ['', 'reviewing', 'accepted', 'waitlisted', 'declined'] },
-        userEmail: { type: 'string', description: "Only this speaker's talks (team)." },
+        userEmail: { type: 'string', description: "Only this speaker's talks (organizers)." },
       },
       additionalProperties: false,
     },
@@ -62,7 +62,7 @@ if (typeof $mcp !== 'undefined') {
     name: 'pocketcon_propose_talk',
     title: 'Propose a talk',
     description:
-      "Propose a talk for PocketCon 2027. It's yours by default; the team can pass user (a users record id, find it with pb_list_records on users) to add a talk for someone else.",
+      "Propose a talk for PocketCon 2027. It's yours by default; organizers can pass user (a users record id, find it with pb_list_records on users) to add a talk for someone else.",
     method: 'POST',
     path: '/api/collections/talk_proposals/records',
     inputSchema: {
@@ -84,7 +84,7 @@ if (typeof $mcp !== 'undefined') {
     name: 'pocketcon_edit_talk',
     title: 'Edit a talk',
     description:
-      "Change a talk proposal's fields. Speakers can edit their own until it's accepted or declined; the team can edit any.",
+      "Change a talk proposal's fields. Speakers can edit their own until it's accepted or declined; organizers can edit any.",
     method: 'PATCH',
     path: '/api/collections/talk_proposals/records/{id}',
     inputSchema: {
@@ -99,7 +99,7 @@ if (typeof $mcp !== 'undefined') {
     name: 'pocketcon_set_talk_status',
     title: 'Set talk status',
     description:
-      'PocketCon team: accept, waitlist or decline a talk, and set its agenda order (sort, ascending; accepted talks appear on the agenda and get a public page at /talks/ID).',
+      'Organizers: accept, waitlist or decline a talk, and set its agenda order (sort, ascending; accepted talks appear on the agenda and get a public page at /talks/ID).',
     method: 'PATCH',
     path: '/api/collections/talk_proposals/records/{id}',
     inputSchema: {
@@ -117,7 +117,7 @@ if (typeof $mcp !== 'undefined') {
   $mcp.addEndpoint({
     name: 'pocketcon_list_sponsor_inquiries',
     title: 'List sponsor inquiries',
-    description: 'Sponsorship inquiries, newest first. Companies see their own; the team sees all.',
+    description: 'Sponsorship inquiries, newest first. Companies see their own; organizers see all.',
     method: 'GET',
     path: '/api/collections/sponsor_inquiries/records',
     request: ({ request }) => ({ ...request, query: { sort: '-created', perPage: 100 } }),
@@ -126,7 +126,7 @@ if (typeof $mcp !== 'undefined') {
   $mcp.addEndpoint({
     name: 'pocketcon_set_sponsor_status',
     title: 'Set sponsor status',
-    description: 'PocketCon team: move a sponsorship inquiry to talking, confirmed or declined.',
+    description: 'Organizers: move a sponsorship inquiry to talking, confirmed or declined.',
     method: 'PATCH',
     path: '/api/collections/sponsor_inquiries/records/{id}',
     inputSchema: {
@@ -140,7 +140,7 @@ if (typeof $mcp !== 'undefined') {
   $mcp.addEndpoint({
     name: 'pocketcon_list_offers',
     title: 'List offers',
-    description: 'Attendee offers. Signed-in attendees see the active ones; the team sees all.',
+    description: 'Attendee offers. Signed-in attendees see the active ones; organizers see all.',
     method: 'GET',
     path: '/api/collections/offers/records',
     request: ({ request }) => ({ ...request, query: { sort: 'sort,created', perPage: 100 } }),
@@ -159,7 +159,7 @@ if (typeof $mcp !== 'undefined') {
   $mcp.addEndpoint({
     name: 'pocketcon_add_offer',
     title: 'Add an offer',
-    description: 'PocketCon team: add an attendee offer (a sponsor discount, merch, a PocketHost deal).',
+    description: 'Organizers: add an attendee offer (a sponsor discount, merch, a PocketHost deal).',
     method: 'POST',
     path: '/api/collections/offers/records',
     inputSchema: { type: 'object', required: ['title', 'url'], properties: offerFields, additionalProperties: false },
@@ -168,7 +168,7 @@ if (typeof $mcp !== 'undefined') {
   $mcp.addEndpoint({
     name: 'pocketcon_edit_offer',
     title: 'Edit an offer',
-    description: 'PocketCon team: change an offer, e.g. set its code or turn it on with active: true.',
+    description: 'Organizers: change an offer, e.g. set its code or turn it on with active: true.',
     method: 'PATCH',
     path: '/api/collections/offers/records/{id}',
     inputSchema: {
@@ -181,6 +181,7 @@ if (typeof $mcp !== 'undefined') {
 
   $mcp.instructions(
     'PocketCon 2027 is a free online PocketBase conference on Saturday, February 6, 2027. pocketcon_* tools manage talk ' +
-      'proposals (the agenda is the accepted talks, ordered by sort), sponsorship inquiries and attendee offers.'
+      'proposals (the agenda is the accepted talks, ordered by sort), sponsorship inquiries and attendee offers. Organizers (users with organizer = true, set by a superuser) run the ' +
+      'conference: they see everything and accept talks; everyone else sees only their own records.'
   )
 }
