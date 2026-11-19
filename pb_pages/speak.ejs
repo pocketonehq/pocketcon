@@ -55,7 +55,7 @@
     const startEdit = async () => {
       const p = await pb.collection('talk_proposals').getOne(editId)
       if (locked(p)) {
-        mine.innerHTML = `<div class="ok"><p><b>${esc(p.title)}</b> has been ${p.status === 'accepted' ? 'accepted' : 'decided'}, so it can't be edited any more. Questions? Email <a href="mailto:ben@pockethost.io">ben@pockethost.io</a>.</p></div>`
+        mine.innerHTML = `<div class="ok"><p><b>${esc(p.title)}</b> has been ${p.status === 'accepted' ? 'accepted' : 'decided'}, so it can't be edited any more. Questions? Email <a href="mailto:ben@pocketcon.dev">ben@pocketcon.dev</a>.</p></div>`
         form.hidden = true
         return
       }
