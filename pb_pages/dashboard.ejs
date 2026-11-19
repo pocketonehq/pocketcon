@@ -1,6 +1,7 @@
 <%
   meta('title', 'Your PocketCon')
   const event = ctx.resolve('event')
+  const { ideas } = ctx.resolve('ideas')
 %>
 <section class="page dashboard">
   <h1 class="page-title">Your PocketCon</h1>
@@ -19,6 +20,15 @@
       <a class="btn" href="<%= event.discord %>">Join the Discord</a>
       <button class="btn" type="button" data-sign-out>Sign out</button>
     </div>
+
+    <h2 id="deep-dives">After-hours deep dives</h2>
+    <p class="note">Optional sessions after the main program, hosted by Ben. Pick the ones you'd stay for; the most wanted go first.</p>
+    <form class="ideas vote" id="dive-form">
+      <% ideas.forEach((idea) => { %>
+        <label><input type="checkbox" name="deep_dives" value="<%= idea.id %>" /> <b><%= idea.title %></b><span><%= idea.blurb %></span></label>
+      <% }) %>
+      <p class="hint" data-dive-status aria-live="polite"></p>
+    </form>
 
     <h2 id="talks">Your talk proposals</h2>
     <ul class="offers" id="talk-list" aria-live="polite"><li class="empty">Loading…</li></ul>
@@ -117,7 +127,27 @@
         : '<li class="empty">Want your company in front of PocketBase developers? Sponsor PocketCon and give attendees an offer.</li>'
     }
 
+    // After-hours votes: saved on the attendee's own users record as they tick boxes.
+    const diveForm = document.getElementById('dive-form')
+    const diveStatus = diveForm.querySelector('[data-dive-status]')
+    const loadDives = async () => {
+      const me = await pb.collection('users').getOne(pb.authStore.record.id, { fields: 'id,deep_dives' })
+      const picked = new Set(me.deep_dives || [])
+      diveForm.querySelectorAll('input').forEach((i) => (i.checked = picked.has(i.value)))
+    }
+    diveForm.addEventListener('change', async () => {
+      const deep_dives = [...diveForm.querySelectorAll('input:checked')].map((i) => i.value)
+      diveStatus.textContent = 'Saving…'
+      try {
+        await pb.collection('users').update(pb.authStore.record.id, { deep_dives })
+        diveStatus.textContent = deep_dives.length ? 'Saved. Thanks!' : 'Saved.'
+      } catch (err) {
+        diveStatus.textContent = message(err)
+      }
+    })
+
     const load = () => {
+      loadDives().catch((err) => (diveStatus.textContent = message(err)))
       if (!pb.authStore.isValid) return
       loadSponsorship().catch((err) => (sponsorList.innerHTML = `<li class="empty">${esc(message(err))}</li>`))
       loadTalks().catch((err) => (talks.innerHTML = `<li class="empty">${esc(message(err))}</li>`))

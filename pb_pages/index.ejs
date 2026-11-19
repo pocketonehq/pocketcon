@@ -1,14 +1,24 @@
 <%
   const event = ctx.resolve('event')
-  // The keynote has no speaker yet; everything else is accepted talk proposals, in the admin's sort order.
-  const agenda = [{ kind: 'Keynote', title: 'PocketBase in 2027', speaker: 'Speaker TBD' }].concat(
-    ctx.resolve('talks').accepted(ctx.app)
-  )
+  // The fixed program; accepted talk proposals (in the admin's sort order) go after the demo, then the open slot.
+  const program = [
+    { kind: 'Opening keynote', title: "PocketOne and what's next", speaker: 'Ben Allfree', note: 'Expect launches.' },
+    { kind: 'Guest keynote', title: 'To be announced' },
+    { kind: 'Live demo', title: 'Zero to deployed with an AI agent', speaker: 'Ben Allfree', note: 'An app built and shipped with an agent, live.' },
+  ]
+  const talks = ctx.resolve('talks').accepted(ctx.app)
+  const closing = [
+    { kind: 'Panel', title: 'Agents and PocketBase in 2027', note: 'Your app as an MCP server, and agents inside your app.' },
+    { kind: 'Closing', title: "Q&A and what's next", speaker: 'Ben Allfree' },
+  ]
+  const agenda = program.concat(talks)
+  const { ideas } = ctx.resolve('ideas')
 %>
 <section class="hero">
   <h1 class="visually-hidden">PocketCon 2027 · <%= event.date %> · free livestream on Discord</h1>
   <div class="splash"><%- ctx.resolve('splash.svg', { mode: 'raw' }) %></div>
   <p class="lede">A day for the PocketBase community: where it stands, where it's going, and what people are building with it.</p>
+  <p class="when"><%= event.date %> · starts <%= event.time %> · free and online</p>
 
   <div class="countdown" id="countdown" data-starts="<%= event.startsAt %>" aria-live="polite">
     <div><b data-unit="d">--</b><span>days</span></div>
@@ -34,7 +44,8 @@
         <div>
           <p class="tag"><%= item.kind %></p>
           <h3><%= item.title %></h3>
-          <p><%= item.speaker %><%= item.headline ? `, ${item.headline}` : '' %></p>
+          <% if (item.speaker) { %><p><%= item.speaker %><%= item.headline ? `, ${item.headline}` : '' %></p><% } %>
+          <% if (item.note) { %><p class="note"><%= item.note %></p><% } %>
         </div>
         <% if (item.id) { %></a><% } %>
       </li>
@@ -43,13 +54,37 @@
       <a href="/speak">
         <span class="num"><%= String(agenda.length + 1).padStart(2, '0') %></span>
         <div>
-          <p class="tag">Open slot</p>
+          <p class="tag">Talks and lightning rounds</p>
           <h3>Your talk here</h3>
-          <p>Built something with PocketBase? Propose a talk, lightning talk or demo →</p>
+          <p>Agentic PocketBase, PocketPages, migrating to 0.23+, or what you built. Propose a talk or a five-minute lightning demo →</p>
         </div>
       </a>
     </li>
+    <% closing.forEach((item, i) => { %>
+      <li>
+        <span class="num"><%= String(agenda.length + 2 + i).padStart(2, '0') %></span>
+        <div>
+          <p class="tag"><%= item.kind %></p>
+          <h3><%= item.title %></h3>
+          <% if (item.speaker) { %><p><%= item.speaker %></p><% } %>
+          <% if (item.note) { %><p class="note"><%= item.note %></p><% } %>
+        </div>
+      </li>
+    <% }) %>
   </ol>
+</section>
+
+<section class="agenda after-hours" id="after-hours">
+  <h2>After hours</h2>
+  <p class="lede">Optional deep dives once the main program wraps, hosted by Ben. Stay for the ones you want.
+    <a href="/dashboard#deep-dives" data-account="Register">Register</a> and pick the ones you'd stay for; the most
+    wanted go first. Want to give one yourself? <a href="/speak#ideas">Claim it as a talk</a> and it moves to the main
+    program.</p>
+  <ul class="ideas">
+    <% ideas.forEach((idea) => { %>
+      <li><b><%= idea.title %></b><span><%= idea.blurb %></span></li>
+    <% }) %>
+  </ul>
 </section>
 
 <section class="sponsors" id="sponsors">
