@@ -4,11 +4,12 @@ PRODID:-//PocketHost//PocketCon//EN
 CALSCALE:GREGORIAN
 BEGIN:VEVENT
 UID:pocketcon-2027@pockethost.io
-DTSTAMP:20261109T000000Z
-DTSTART;VALUE=DATE:20270206
-DTEND;VALUE=DATE:20270207
+DTSTAMP:20261119T000000Z
+SEQUENCE:1
+DTSTART:20270206T170000Z
+DURATION:PT4H
 SUMMARY:PocketCon 2027
-DESCRIPTION:A free livestream about PocketBase. https://discord.gg/XkAetnQEuc
+DESCRIPTION:A free online conference for PocketBase builders. Starts 9am Pacific and runs as long as the program does. https://pocketcon.dev
 URL:https://pocketcon.dev
 END:VEVENT
 END:VCALENDAR
