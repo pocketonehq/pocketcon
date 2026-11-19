@@ -8,10 +8,11 @@
   ]
   const talks = ctx.resolve('talks').accepted(ctx.app)
   const closing = [
-    { kind: 'Panel', title: 'Agentic PocketBase' },
+    { kind: 'Panel', title: 'Agents and PocketBase in 2027', note: 'Your app as an MCP server, and agents inside your app.' },
     { kind: 'Closing', title: "Q&A and what's next", speaker: 'Ben Allfree' },
   ]
   const agenda = program.concat(talks)
+  const { ideas } = ctx.resolve('ideas')
 %>
 <section class="hero">
   <h1 class="visually-hidden">PocketCon 2027 · <%= event.date %> · free livestream on Discord</h1>
@@ -66,10 +67,24 @@
           <p class="tag"><%= item.kind %></p>
           <h3><%= item.title %></h3>
           <% if (item.speaker) { %><p><%= item.speaker %></p><% } %>
+          <% if (item.note) { %><p class="note"><%= item.note %></p><% } %>
         </div>
       </li>
     <% }) %>
   </ol>
+</section>
+
+<section class="agenda after-hours" id="after-hours">
+  <h2>After hours</h2>
+  <p class="lede">Optional deep dives once the main program wraps, hosted by Ben. Stay for the ones you want.
+    <a href="/dashboard#deep-dives" data-account="Register">Register</a> and pick the ones you'd stay for; the most
+    wanted go first. Want to give one yourself? <a href="/speak#ideas">Claim it as a talk</a> and it moves to the main
+    program.</p>
+  <ul class="ideas">
+    <% ideas.forEach((idea) => { %>
+      <li><b><%= idea.title %></b><span><%= idea.blurb %></span></li>
+    <% }) %>
+  </ul>
 </section>
 
 <section class="sponsors" id="sponsors">

@@ -1,10 +1,24 @@
-<% meta('title', 'Give a talk') %>
+<%
+  meta('title', 'Give a talk')
+  const { ideas } = ctx.resolve('ideas')
+%>
 <section class="page">
   <h1 class="page-title">Give a talk</h1>
   <p class="lede">
     Built something with PocketBase, or learned something the hard way? Propose a talk, a 5-minute lightning talk or a
     live demo. Talks are streamed on Discord and recorded.
   </p>
+
+  <div class="ideas-box" id="ideas">
+    <h2>Talks we'd love to see</h2>
+    <p>Take one: propose it below and it's yours, on the main program. Topics nobody claims become optional after-hours
+      sessions hosted by Ben.</p>
+    <ul class="ideas">
+      <% ideas.forEach((idea) => { %>
+        <li><b><%= idea.title %></b><span><%= idea.blurb %></span></li>
+      <% }) %>
+    </ul>
+  </div>
 
   <p class="note" data-signed-out><a href="/register?next=/speak">Register</a> first, then come back to submit.</p>
 

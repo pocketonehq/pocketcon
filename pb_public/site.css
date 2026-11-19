@@ -368,3 +368,14 @@ button.btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
 /* Start time under the hero lede, and short notes on agenda items */
 .hero .when { font-family: var(--mono); color: var(--accent-2); margin: 0.5rem auto 0; text-align: center; }
 .agenda p.note { margin: 4px 0 0; font-size: 0.85rem; }
+/* "Talks we'd love to see" / after-hours topics, and the dashboard vote */
+.ideas { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.ideas li, .ideas label { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; border: 1px solid var(--line, rgba(255,255,255,0.1)); border-radius: 12px; background: rgba(255,255,255,0.03); }
+.ideas span { color: var(--muted); font-size: 0.9rem; }
+.ideas.vote label { cursor: pointer; }
+.ideas.vote label:has(input:checked) { border-color: var(--accent); background: rgba(255, 122, 69, 0.08); }
+.ideas.vote input { accent-color: var(--accent); width: auto; margin: 0 0 4px; align-self: flex-start; }
+.ideas.vote .hint { grid-column: 1 / -1; margin: 0; }
+.ideas-box { margin: 0 0 2rem; }
+.ideas-box h2 { margin-bottom: 0.25rem; }
+.after-hours .lede { max-width: none; margin: 0 0 0.5rem; }

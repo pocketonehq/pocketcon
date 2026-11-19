@@ -17,6 +17,10 @@ pocketone serve --dev --dir=pb_data --migrationsDir=pb_migrations --publicDir=pb
 
 Pages are in `pb_pages` (`+layout.ejs` is the shared header and footer; `_private/event.js` holds the date and links; `_private/splash.svg` is generated from `design/tshirt-v2.html` by `design/splash.py`). Static files (CSS, `app.js`, favicon, calendar file) are in `pb_public`. Registration (email, Google, GitHub), talk proposals and attendee offers use the PocketBase JS SDK against the site's own API; the collections and their access rules are in `pb_migrations/`. Proposals are only visible to their owner (and organizers); offers only to signed-in users.
 
+### Talks we'd love to see and after-hours votes
+
+`pb_pages/_private/ideas.js` lists topics shown on `/speak` ("Talks we'd love to see") and on the home page ("After hours"). Attendees pick the after-hours deep dives they'd stay for on their dashboard; the picks are `users.deep_dives`, and organizers read the totals in the `deep_dive_tally` view. Changing a topic id needs a migration (the ids are the field's values).
+
 ### Organizers
 
 Organizers run the conference without being superusers: they see every talk proposal, sponsorship inquiry and offer, accept or decline talks, set the agenda order, add talks for speakers, and manage offers. To make someone an organizer, a superuser opens their record in **users** in the admin dashboard (`/_/`) and turns on `organizer`. Users can't set it themselves, on sign-up or later (`pb_migrations/1794700600_organizers.js`).
