@@ -9,6 +9,10 @@ for bg in dark light none; do
     --window-size=1200,1200 --default-background-color=00000000 --virtual-time-budget=8000 \
     --screenshot="$PWD/tshirt-v2-$bg.png" "file://$PWD/tshirt-v2.html?bg=$bg" >/dev/null 2>&1
 done
+echo "$(date +%T) rendering social card"
+timeout 60 "$CH" --headless=new --disable-gpu --hide-scrollbars --force-device-scale-factor=1 \
+  --window-size=1200,630 --virtual-time-budget=8000 \
+  --screenshot="$PWD/../pb_public/og.png" "file://$PWD/og.html" >/dev/null 2>&1
 echo "$(date +%T) done"
 
 # Keep the home page splash in sync with the shirt art.

@@ -15,7 +15,7 @@ pocketone superuser upsert admin@example.com password --dir=pb_data
 pocketone serve --dev --dir=pb_data --migrationsDir=pb_migrations --publicDir=pb_public --hooksDir=pb_hooks
 ```
 
-Pages are in `pb_pages` (`+layout.ejs` is the shared header and footer; `_private/event.js` holds the date and links; `_private/splash.svg` is generated from `design/tshirt-v2.html` by `design/splash.py`). Static files (CSS, `app.js`, favicon, calendar file) are in `pb_public`. Registration (email, Google, GitHub), talk proposals and attendee offers use the PocketBase JS SDK against the site's own API; the collections and their access rules are in `pb_migrations/`. Proposals are only visible to their owner (and organizers); offers only to signed-in users.
+Pages are in `pb_pages` (`+layout.ejs` is the shared header and footer; `_private/event.js` holds the date and links; `_private/splash.svg` is generated from `design/tshirt-v2.html` by `design/splash.py`; the link-preview card `pb_public/og.png` is rendered from `design/og.html` by `design/render.sh`). Static files (CSS, `app.js`, favicon, calendar file) are in `pb_public`. Registration (email, Google, GitHub), talk proposals and attendee offers use the PocketBase JS SDK against the site's own API; the collections and their access rules are in `pb_migrations/`. Proposals are only visible to their owner (and organizers); offers only to signed-in users.
 
 ### Talks we'd love to see and after-hours votes
 

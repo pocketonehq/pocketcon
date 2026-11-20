@@ -1,0 +1,84 @@
+<!doctype html>
+<!-- PocketCon 2027 social card (og:image), 1200x630. Render: headless Chrome via render.sh, which writes pb_public/og.png. The art is the shirt's sun and keycap (tshirt-v2.html). -->
+<html>
+<head>
+<meta charset="utf-8" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@700&display=block" rel="stylesheet" />
+<style>
+  html, body { margin: 0; width: 1200px; height: 630px; background: #0b0d12; overflow: hidden; }
+  svg { display: block; }
+  .word { font-family: 'Space Grotesk', sans-serif; font-weight: 700; }
+  .body { font-family: 'Space Grotesk', sans-serif; font-weight: 500; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 1200 630" width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffd25a" />
+      <stop offset="0.5" stop-color="#ff7a45" />
+      <stop offset="1" stop-color="#ff3d6e" />
+    </linearGradient>
+    <linearGradient id="hot" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff3d6e" />
+      <stop offset="0.5" stop-color="#ff7a45" />
+      <stop offset="1" stop-color="#ffd25a" />
+    </linearGradient>
+    <linearGradient id="capTop" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a2f3f" />
+      <stop offset="1" stop-color="#141824" />
+    </linearGradient>
+    <linearGradient id="capSide" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff7a45" />
+      <stop offset="1" stop-color="#c43a2a" />
+    </linearGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.22" />
+      <stop offset="0.45" stop-color="#fff" stop-opacity="0" />
+    </linearGradient>
+    <mask id="slices">
+      <rect x="-1200" y="-1200" width="3600" height="3600" fill="#fff" />
+      <g fill="#000">
+        <rect x="-600" y="0" width="1200" height="8" />
+        <rect x="-600" y="42" width="1200" height="12" />
+        <rect x="-600" y="84" width="1200" height="16" />
+        <rect x="-600" y="126" width="1200" height="20" />
+        <rect x="-600" y="168" width="1200" height="24" />
+        <rect x="-600" y="210" width="1200" height="28" />
+      </g>
+    </mask>
+  </defs>
+
+  <!-- art: sun + keycap, centered at (300, 300), scaled from the shirt -->
+  <g transform="translate(305 300) scale(0.78)">
+    <circle cx="0" cy="0" r="305" fill="url(#sun)" mask="url(#slices)" />
+    <g fill="#ffd25a">
+      <path d="M-330 -250 l8 27 27 8 -27 8 -8 27 -8 -27 -27 -8 27 -8z" />
+      <path d="M330 220 l6 20 20 6 -20 6 -6 20 -6 -20 -20 -6 20 -6z" />
+    </g>
+    <g transform="translate(0 30) rotate(-6)">
+      <rect x="-200" y="-182" width="400" height="400" rx="70" fill="#0b0d12" opacity="0.55" transform="translate(18 26)" />
+      <rect x="-200" y="-192" width="400" height="400" rx="70" fill="url(#capSide)" />
+      <rect x="-200" y="-222" width="400" height="400" rx="70" fill="url(#capTop)" stroke="#f4f1ea" stroke-width="14" />
+      <rect x="-172" y="-194" width="344" height="344" rx="48" fill="none" stroke="#f4f1ea" stroke-opacity="0.12" stroke-width="4" />
+      <rect x="-193" y="-215" width="386" height="386" rx="64" fill="url(#shine)" />
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="34">
+        <path d="M-118 -150 V22 M-118 -150 H-64 A52 52 0 0 1 -64 -46 H-118" stroke="#f4f1ea" />
+        <path d="M126 -12 A82 82 0 1 0 126 112" stroke="url(#hot)" />
+      </g>
+    </g>
+  </g>
+
+  <!-- text -->
+  <g transform="translate(600 0)">
+    <text x="0" y="200" class="word" font-size="86" letter-spacing="3" fill="#f4f1ea">POCKETCON</text>
+    <text x="0" y="330" class="word" font-size="132" letter-spacing="6"
+          fill="none" stroke="url(#hot)" stroke-width="7" stroke-linejoin="round">2027</text>
+    <text x="2" y="410" class="body" font-size="30" fill="#f4f1ea" fill-opacity="0.85">A free livestream about PocketBase</text>
+    <text x="2" y="470" class="mono" font-size="26" letter-spacing="4" fill="#ffd25a">SAT FEB 6 · LIVE ON DISCORD</text>
+    <text x="2" y="540" class="mono" font-size="24" letter-spacing="2" fill="#f4f1ea" fill-opacity="0.55">pocketcon.dev</text>
+  </g>
+</svg>
+</body>
+</html>
