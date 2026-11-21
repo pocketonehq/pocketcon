@@ -5,7 +5,7 @@
   "description": "PocketCon 2027: a free livestream about PocketBase",
   "scripts": {
     "dev": "pocketone serve --dev --dir=pb_data",
-    "deploy": "pockethost deploy pocketcon"
+    "deploy": "pocketone deploy"
   },
   "license": "MIT"
 }

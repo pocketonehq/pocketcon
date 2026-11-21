@@ -1,0 +1,8 @@
+{
+  "default": "default",
+  "remotes": {
+    "default": {
+      "url": "https://pocketcon.dev"
+    }
+  }
+}
