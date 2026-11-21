@@ -5,5 +5,5 @@ module.exports = {
   time: '9am Pacific (17:00 UTC)',
   startsAt: '2027-02-06T17:00:00Z',
   discord: 'https://discord.gg/XkAetnQEuc',
-  github: 'https://github.com/pockethost/pocketcon',
+  github: 'https://github.com/pocketonehq/pocketcon',
 }
