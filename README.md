@@ -23,7 +23,7 @@ Pages are in `pb_pages` (`+layout.ejs` is the shared header and footer; `_privat
 
 ### Organizers
 
-Organizers run the conference without being superusers: they see every talk proposal, sponsorship inquiry and offer, accept or decline talks, set the agenda order, add talks for speakers, and manage offers. To make someone an organizer, a superuser opens their record in **users** in the admin dashboard (`/_/`) and turns on `organizer`. Users can't set it themselves, on sign-up or later (`pb_migrations/1794700600_organizers.js`).
+Organizers run the conference without being superusers: they see every talk proposal, sponsorship inquiry and offer, accept or decline talks, set the agenda order, add talks for speakers, and manage offers. Their screen is `/review` (talk status and agenda order, sponsorship status, after-hours vote totals), linked from the dashboard; the dashboard itself shows only their own records, like everyone's. To make someone an organizer, a superuser opens their record in **users** in the admin dashboard (`/_/`) and turns on `organizer`. Users can't set it themselves, on sign-up or later (`pb_migrations/1794700600_organizers.js`).
 
 ### Sign-in setup (`/setup`)
 

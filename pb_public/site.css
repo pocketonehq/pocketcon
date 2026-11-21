@@ -379,3 +379,15 @@ button.btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
 .ideas-box { margin: 0 0 2rem; }
 .ideas-box h2 { margin-bottom: 0.25rem; }
 .after-hours .lede { max-width: none; margin: 0 0 0.5rem; }
+
+/* Organizer review (/review) */
+.review .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
+.review .filters .chip { font: inherit; font-size: 0.85rem; cursor: pointer; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--muted); }
+.review .filters .chip.on { border-color: var(--accent); color: var(--text); }
+.review .controls { flex: 0 0 auto; display: grid; gap: 8px; align-self: flex-start; }
+.review .controls label { display: grid; gap: 4px; color: var(--muted); font-size: 0.85rem; }
+.review .controls select, .review .controls input { font: inherit; color: var(--text); background: var(--bg, #111); border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; width: 9rem; }
+.review .pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.review details summary { cursor: pointer; color: var(--muted); margin: 4px 0; }
+.review .tally { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+.review .tally b { display: inline-block; min-width: 2.5rem; color: var(--accent-2); }

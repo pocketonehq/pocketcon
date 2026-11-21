@@ -19,6 +19,7 @@
       <a class="btn" href="/pocketcon-2027.ics">Add to calendar</a>
       <a class="btn" href="<%= event.discord %>">Join the Discord</a>
       <button class="btn" type="button" data-sign-out>Sign out</button>
+      <a class="btn highlight" href="/review" data-organizer hidden>Organizer review</a>
     </div>
 
     <h2 id="deep-dives">After-hours deep dives</h2>
@@ -58,8 +59,12 @@
       declined: ['Not this time', 'Thanks for proposing. We hope to see you in the chat.'],
     }
 
+    // Only the signed-in user's own records: organizers can list everyone's, but that belongs on /review.
+    const mine = () => pb.filter('user = {:id}', { id: pb.authStore.record.id })
+    const reviewLink = document.querySelector('[data-organizer]')
+
     const loadTalks = async () => {
-      const items = await pb.collection('talk_proposals').getFullList({ sort: '-created' })
+      const items = await pb.collection('talk_proposals').getFullList({ filter: mine(), sort: '-created' })
       talks.innerHTML = items.length
         ? items
             .map((p) => {
@@ -76,7 +81,7 @@
     }
 
     const loadOffers = async () => {
-      const items = await pb.collection('offers').getFullList({ sort: 'sort,created' })
+      const items = await pb.collection('offers').getFullList({ filter: 'active = true', sort: 'sort,created' })
       if (!items.length) {
         offers.innerHTML = '<li class="empty">Offers are on the way. Check back soon.</li>'
         return
@@ -112,7 +117,7 @@
     }
     const sponsorList = document.getElementById('sponsor-list')
     const loadSponsorship = async () => {
-      const items = await pb.collection('sponsor_inquiries').getFullList({ sort: '-created' })
+      const items = await pb.collection('sponsor_inquiries').getFullList({ filter: mine(), sort: '-created' })
       sponsorList.innerHTML = items.length
         ? items
             .map((s) => {
@@ -149,6 +154,7 @@
     const load = () => {
       loadDives().catch((err) => (diveStatus.textContent = message(err)))
       if (!pb.authStore.isValid) return
+      reviewLink.hidden = !pb.authStore.record?.organizer
       loadSponsorship().catch((err) => (sponsorList.innerHTML = `<li class="empty">${esc(message(err))}</li>`))
       loadTalks().catch((err) => (talks.innerHTML = `<li class="empty">${esc(message(err))}</li>`))
       loadOffers().catch((err) => (offers.innerHTML = `<li class="empty">${esc(message(err))}</li>`))
