@@ -8,9 +8,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - run: npx pockethost@latest deploy pocketcon -y
+      - name: Install pocketone (newest release)
         env:
-          POCKETHOST_TOKEN: ${{ secrets.POCKETHOST_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=$(gh release list -R pocketonehq/pocketone --limit 1 --json tagName -q '.[0].tagName')
+          echo "pocketone $tag"
+          gh release download "$tag" -R pocketonehq/pocketone -p "pocketone_${tag#v}_linux_amd64.zip" -O "$RUNNER_TEMP/pocketone.zip"
+          unzip -q "$RUNNER_TEMP/pocketone.zip" pocketone -d "$RUNNER_TEMP/pocketone"
+          echo "$RUNNER_TEMP/pocketone" >> "$GITHUB_PATH"
+      # Deploys to the default remote in .pocketbase/remotes.json (https://pocketcon.dev).
+      - run: pocketone deploy
+        env:
+          P1_TOKEN: ${{ secrets.POCKETHOST_TOKEN }}

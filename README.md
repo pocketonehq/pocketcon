@@ -49,15 +49,16 @@ claude mcp add --transport http pocketcon http://127.0.0.1:8090/mcp
 
 ## Deploy
 
-Pushes to `main` deploy with `npx pockethost@latest deploy pocketcon` (see `.github/workflows/deploy.yml`). The workflow needs a `POCKETHOST_TOKEN` secret: a PocketHost API token with write access to the `pocketcon` instance.
+Pushes to `main` deploy with `pocketone deploy` (see `.github/workflows/deploy.yml`) to the remote in `.pocketbase/remotes.json`, https://pocketcon.dev. The workflow needs a `POCKETHOST_TOKEN` secret, passed to `pocketone` as `P1_TOKEN`: a PocketHost API token from the dashboard (`pbt_...`, scope `instances` or `instances=<pocketcon's id>`; an older `ph_pat_...` works too), or a pocketcon.dev superuser API token with the `deploy` scope.
 
-By hand:
+By hand, with [PocketOne](https://pocketone.dev) installed:
 
 ```bash
-npx pockethost@latest login
-npm install
-npx pockethost@latest deploy pocketcon
+pocketone login
+pocketone deploy
 ```
+
+Migrations take effect when the app restarts: `pocketone deploy --restart`, or `pocketone restart` later.
 
 ## License
 
