@@ -1,0 +1,172 @@
+<%
+  meta('title', 'Organizer review')
+  const { ideas } = ctx.resolve('ideas')
+%>
+<section class="page dashboard review">
+  <h1 class="page-title">Organizer review</h1>
+
+  <div data-signed-out>
+    <p class="lede">For the PocketCon team: review talk proposals and sponsorship inquiries.</p>
+    <div class="actions"><a class="btn primary" href="/register?next=/review">Sign in</a></div>
+  </div>
+
+  <div data-signed-in hidden>
+    <p class="lede" data-not-organizer hidden>This page is for PocketCon organizers. <a href="/dashboard">Back to your dashboard</a>.</p>
+
+    <div data-organizer-only hidden>
+      <div class="actions"><a class="btn" href="/dashboard">Your dashboard</a></div>
+
+      <h2 id="talks">Talk proposals</h2>
+      <p class="note">Changes save as you make them. The agenda is the accepted talks, lowest order first.</p>
+      <div class="filters" role="group" aria-label="Show proposals">
+        <button type="button" class="chip on" data-show="open">To decide</button>
+        <button type="button" class="chip" data-show="accepted">Accepted</button>
+        <button type="button" class="chip" data-show="waitlisted">Waitlisted</button>
+        <button type="button" class="chip" data-show="declined">Declined</button>
+        <button type="button" class="chip" data-show="all">All</button>
+      </div>
+      <ul class="offers" id="talk-list" aria-live="polite"><li class="empty">Loading…</li></ul>
+
+      <h2 id="sponsorship">Sponsorship inquiries</h2>
+      <ul class="offers" id="sponsor-list" aria-live="polite"><li class="empty">Loading…</li></ul>
+
+      <h2 id="deep-dives">After-hours votes</h2>
+      <ul class="tally" id="dive-tally" aria-live="polite"><li class="empty">Loading…</li></ul>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('pocketcon:ready', () => {
+    const { pb, esc, message } = PocketCon
+    const ideas = <%- JSON.stringify(ideas.map((i) => ({ id: i.id, title: i.title }))) %>
+    const talkList = document.getElementById('talk-list')
+    const sponsorList = document.getElementById('sponsor-list')
+    const tally = document.getElementById('dive-tally')
+    const formats = { talk: 'Talk', lightning: 'Lightning talk', demo: 'Live demo' }
+    const talkStatuses = [['', 'Submitted'], ['reviewing', 'In review'], ['accepted', 'Accepted'], ['waitlisted', 'Waitlisted'], ['declined', 'Declined']]
+    const sponsorStatuses = [['', 'Received'], ['talking', 'In talks'], ['confirmed', 'Confirmed'], ['declined', 'Declined']]
+    let talks = []
+    let show = 'open'
+
+    const options = (list, value) =>
+      list.map(([v, label]) => `<option value="${v}"${(value || '') === v ? ' selected' : ''}>${label}</option>`).join('')
+    const date = (s) => esc(new Date(s).toLocaleDateString())
+    const linkify = (s) =>
+      String(s || '')
+        .split(/[\s,]+/)
+        .filter((l) => /^https?:\/\/\S+$/i.test(l))
+        .map((l) => `<a href="${esc(l)}" target="_blank" rel="noopener">${esc(l)}</a>`)
+        .join(' ')
+
+    const visible = (t) =>
+      show === 'all' ? true : show === 'open' ? !t.status || t.status === 'reviewing' : t.status === show
+
+    const renderTalks = () => {
+      const items = talks.filter(visible)
+      talkList.innerHTML = items.length
+        ? items
+            .map(
+              (t) => `<li data-id="${esc(t.id)}"><div>
+                <h3>${esc(t.title)}</h3>
+                <p>${esc(formats[t.format] || t.format)} · ${esc(t.name)} &lt;<a href="mailto:${esc(t.email)}">${esc(t.email)}</a>&gt; · sent ${date(t.created)}</p>
+                ${t.headline ? `<p><b>${esc(t.headline)}</b></p>` : ''}
+                <details><summary>Abstract and bio</summary>
+                  <p class="pre">${esc(t.abstract)}</p>
+                  ${t.bio ? `<p class="pre"><b>Bio:</b> ${esc(t.bio)}</p>` : ''}
+                  ${t.links ? `<p>${linkify(t.links)}</p>` : ''}
+                </details>
+                ${t.status === 'accepted' ? `<p><a href="/talks/${esc(t.id)}">On the agenda</a></p>` : ''}
+              </div>
+              <div class="controls">
+                <label>Status <select data-field="status">${options(talkStatuses, t.status)}</select></label>
+                <label>Order <input type="number" step="1" data-field="sort" value="${t.sort || ''}" /></label>
+                <span class="hint" data-saved aria-live="polite"></span>
+              </div></li>`
+            )
+            .join('')
+        : '<li class="empty">Nothing here.</li>'
+    }
+
+    const loadTalks = async () => {
+      talks = await pb.collection('talk_proposals').getFullList({ sort: 'sort,-created' })
+      renderTalks()
+    }
+
+    const loadSponsors = async () => {
+      const items = await pb.collection('sponsor_inquiries').getFullList({ sort: '-created' })
+      sponsorList.innerHTML = items.length
+        ? items
+            .map(
+              (s) => `<li data-id="${esc(s.id)}"><div>
+                <h3><a href="${esc(s.website)}" target="_blank" rel="noopener">${esc(s.company)}</a></h3>
+                <p>${esc(s.name)} &lt;<a href="mailto:${esc(s.email)}">${esc(s.email)}</a>&gt; · sent ${date(s.created)}</p>
+                ${s.offer ? `<p class="pre"><b>Offer:</b> ${esc(s.offer)}</p>` : ''}
+                ${s.message ? `<p class="pre">${esc(s.message)}</p>` : ''}
+              </div>
+              <div class="controls">
+                <label>Status <select data-field="status">${options(sponsorStatuses, s.status)}</select></label>
+                <span class="hint" data-saved aria-live="polite"></span>
+              </div></li>`
+            )
+            .join('')
+        : '<li class="empty">No inquiries yet.</li>'
+    }
+
+    const loadTally = async () => {
+      const rows = await pb.collection('deep_dive_tally').getFullList()
+      const votes = Object.fromEntries(rows.map((r) => [r.id, r.votes]))
+      tally.innerHTML = ideas
+        .map((i) => ({ ...i, votes: votes[i.id] || 0 }))
+        .sort((a, b) => b.votes - a.votes)
+        .map((i) => `<li><b>${i.votes}</b> ${esc(i.title)}</li>`)
+        .join('')
+    }
+
+    // Save a status or order change as soon as it's made.
+    const save = (collection, after) => async (e) => {
+      const input = e.target.closest('[data-field]')
+      if (!input) return
+      const li = input.closest('li[data-id]')
+      const saved = li.querySelector('[data-saved]')
+      const field = input.dataset.field
+      const value = field === 'sort' ? (input.value === '' ? 0 : parseInt(input.value, 10)) : input.value
+      saved.textContent = 'Saving…'
+      try {
+        const rec = await pb.collection(collection).update(li.dataset.id, { [field]: value })
+        saved.textContent = 'Saved'
+        after?.(rec)
+      } catch (err) {
+        saved.textContent = message(err)
+      }
+    }
+    talkList.addEventListener(
+      'change',
+      save('talk_proposals', (rec) => {
+        talks = talks.map((t) => (t.id === rec.id ? rec : t))
+      })
+    )
+    sponsorList.addEventListener('change', save('sponsor_inquiries'))
+
+    document.querySelectorAll('[data-show]').forEach((b) =>
+      b.addEventListener('click', () => {
+        show = b.dataset.show
+        document.querySelectorAll('[data-show]').forEach((x) => x.classList.toggle('on', x === b))
+        renderTalks()
+      })
+    )
+
+    const load = () => {
+      if (!pb.authStore.isValid) return
+      const organizer = !!pb.authStore.record?.organizer
+      document.querySelector('[data-organizer-only]').hidden = !organizer
+      document.querySelector('[data-not-organizer]').hidden = organizer
+      if (!organizer) return
+      loadTalks().catch((err) => (talkList.innerHTML = `<li class="empty">${esc(message(err))}</li>`))
+      loadSponsors().catch((err) => (sponsorList.innerHTML = `<li class="empty">${esc(message(err))}</li>`))
+      loadTally().catch((err) => (tally.innerHTML = `<li class="empty">${esc(message(err))}</li>`))
+    }
+    pb.authStore.onChange(load)
+    load()
+  })
+</script>
