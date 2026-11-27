@@ -405,3 +405,6 @@ button.btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
 .speaker-card h3 { margin: 0; font-size: 1.15rem; }
 .speaker-card .headline { margin: 2px 0 0; color: var(--accent-2); font-size: 0.9rem; }
 .speaker-card .bio { margin: 14px 0 0; color: var(--muted); font-size: 0.95rem; white-space: pre-line; }
+.speaker-line { display: flex; align-items: center; gap: 14px; margin: 0 0 0.5rem; }
+.speaker-line .speaker { margin: 0; }
+.talk-avatar { width: 64px; height: 64px; font-size: 1.2rem; }

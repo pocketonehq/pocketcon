@@ -9,7 +9,10 @@
 <article class="page talk-page">
   <p class="tag"><%= talk.kind %></p>
   <h1 class="page-title"><%= talk.title %></h1>
-  <p class="speaker"><b><%= talk.speaker %></b><% if (talk.headline) { %>, <%= talk.headline %><% } %></p>
+  <div class="speaker-line">
+    <%- include('avatar', { person: talk, cls: 'talk-avatar' }) %>
+    <p class="speaker"><b><%= talk.speaker %></b><% if (talk.headline) { %>, <%= talk.headline %><% } %></p>
+  </div>
   <p class="note">PocketCon 2027 · <%= event.date %> · live on Discord</p>
 
   <h2>About the talk</h2>
