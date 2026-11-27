@@ -1,0 +1,42 @@
+<% meta('title', 'Sign in') %>
+<section class="page">
+  <h1 class="page-title">Sign in</h1>
+
+  <div data-signed-in hidden>
+    <p class="ok">You're signed in as <b data-email></b>.</p>
+    <div class="actions">
+      <a class="btn primary" href="/dashboard">Go to your dashboard</a>
+      <button class="btn" type="button" data-sign-out>Sign out</button>
+    </div>
+  </div>
+
+  <%- include('oauth-buttons') %>
+
+  <form class="form" id="signin-form" data-signed-out>
+    <label>Email <input name="email" type="email" autocomplete="email" required /></label>
+    <label>Password <input name="password" type="password" autocomplete="current-password" required /></label>
+    <div class="actions">
+      <button class="btn primary" type="submit">Sign in</button>
+    </div>
+    <p class="error" data-error hidden></p>
+    <p class="hint">New here? <a data-register href="/register">Register</a> (free).</p>
+  </form>
+</section>
+
+<script>
+  document.addEventListener('pocketcon:ready', () => {
+    const form = document.getElementById('signin-form')
+    const next = new URLSearchParams(location.search).get('next')
+    const safeNext = next && next.startsWith('/') && !next.startsWith('//') ? next : ''
+    if (safeNext) form.querySelector('[data-register]').href = '/register?next=' + encodeURIComponent(safeNext)
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const { email, password } = Object.fromEntries(new FormData(form))
+      await PocketCon.run(form, async () => {
+        await PocketCon.pb.collection('users').authWithPassword(email, password)
+        location.href = safeNext || '/dashboard'
+      })
+    })
+  })
+</script>

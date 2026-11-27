@@ -21,6 +21,7 @@
       <li data-status="github">GitHub: <b>checking…</b></li>
       <li data-status="google">Google: <b>checking…</b></li>
     </ul>
+    <p class="hint">Each provider needs two callback URLs: <code data-redirect></code> for the register page and <code data-agent-redirect></code> for agents signing in to the MCP endpoint (PocketOne's <code>oauth/v1</code> sign-in page). A provider set up before both were listed has only the first: add the second to the GitHub App's <b>Callback URL</b> list and the Google client's <b>Authorized redirect URIs</b>.</p>
 
     <h2>GitHub</h2>
     <p>Creates a GitHub App for sign-in. GitHub opens with everything filled in: you click <b>Create GitHub App</b> and land back here, connected.</p>
@@ -38,6 +39,7 @@
       <li>Under <a href="https://console.cloud.google.com/auth/clients/create" target="_blank" rel="noopener">Clients → Create client</a>, choose <b>Web application</b> and add:
         <div class="copy-row">Authorized JavaScript origin <code data-origin></code> <button class="btn copy" type="button" data-copy="origin">Copy</button></div>
         <div class="copy-row">Authorized redirect URI <code data-redirect></code> <button class="btn copy" type="button" data-copy="redirect">Copy</button></div>
+        <div class="copy-row">Authorized redirect URI <code data-agent-redirect></code> <button class="btn copy" type="button" data-copy="agentRedirect">Copy</button></div>
       </li>
       <li>Paste the client ID and secret Google shows you:</li>
     </ol>
@@ -55,13 +57,18 @@
 <script>
   ;(() => {
     const origin = location.origin
+    // The register page's popup sign-in comes back to PocketBase's own redirect handler.
     const redirect = origin + '/api/oauth2-redirect'
+    // The MCP sign-in page (PocketOne's oauth/v1 contract) has its own provider callback.
+    const agentRedirect = origin + '/api/_c/oauth/v1/provider/callback'
+    const copies = { origin, redirect, agentRedirect }
     document.querySelectorAll('[data-origin]').forEach((el) => (el.textContent = origin))
     document.querySelectorAll('[data-redirect]').forEach((el) => (el.textContent = redirect))
+    document.querySelectorAll('[data-agent-redirect]').forEach((el) => (el.textContent = agentRedirect))
     document.querySelectorAll('[data-host]').forEach((el) => (el.textContent = location.hostname))
     document.querySelectorAll('[data-copy]').forEach((b) =>
       b.addEventListener('click', () => {
-        navigator.clipboard.writeText(b.dataset.copy === 'origin' ? origin : redirect)
+        navigator.clipboard.writeText(copies[b.dataset.copy])
         b.textContent = 'Copied'
         setTimeout(() => (b.textContent = 'Copy'), 1500)
       }),
@@ -127,7 +134,7 @@
           url: origin,
           description: 'Sign in with GitHub on ' + location.hostname,
           redirect_url: origin + '/setup/github/callback',
-          callback_urls: [redirect],
+          callback_urls: [redirect, agentRedirect],
           hook_attributes: { url: origin + '/', active: false },
           public: true,
           // User permission "Email addresses" (read), so sign-in can see private emails. The manifest key is `emails`.
