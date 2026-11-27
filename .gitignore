@@ -3,3 +3,5 @@ pb_data
 pockethost.json
 .DS_Store
 .pocketone
+tsconfig.json
+types.d.ts
