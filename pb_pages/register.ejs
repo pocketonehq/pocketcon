@@ -19,8 +19,8 @@
     <label>Password <input name="password" type="password" autocomplete="new-password" minlength="8" required /></label>
     <p class="hint">At least 8 characters. By registering you agree to the <a href="/terms">terms</a> and <a href="/privacy">privacy policy</a>.</p>
     <div class="actions">
-      <button class="btn primary" type="submit" data-mode="register">Register</button>
-      <button class="btn" type="submit" data-mode="signin">I'm already registered</button>
+      <button class="btn primary" type="submit">Register</button>
+      <a class="btn" data-signin href="/signin">I'm already registered</a>
     </div>
     <p class="error" data-error hidden></p>
   </form>
@@ -34,15 +34,15 @@
       location.href = next && next.startsWith('/') && !next.startsWith('//') ? next : '/dashboard'
     }
 
-    let mode = 'register'
-    form.querySelectorAll('[data-mode]').forEach((b) => b.addEventListener('click', () => (mode = b.dataset.mode)))
+    // "I'm already registered" goes to /signin and keeps ?next.
+    const next = new URLSearchParams(location.search).get('next')
+    if (next && next.startsWith('/') && !next.startsWith('//')) form.querySelector('[data-signin]').href = '/signin?next=' + encodeURIComponent(next)
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault()
       const { email, password } = Object.fromEntries(new FormData(form))
       await PocketCon.run(form, async () => {
-        if (mode === 'register') {
-          await PocketCon.pb.collection('users').create({ email, password, passwordConfirm: password })
-        }
+        await PocketCon.pb.collection('users').create({ email, password, passwordConfirm: password })
         await PocketCon.pb.collection('users').authWithPassword(email, password)
         goNext()
       })
