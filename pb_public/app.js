@@ -50,7 +50,7 @@
     // data-account holds the signed-out label; empty means "Sign in".
     document.querySelectorAll('[data-account]').forEach((a) => {
       a.textContent = signedIn ? 'Dashboard' : a.dataset.account || 'Sign in'
-      a.href = signedIn ? '/dashboard' : '/register'
+      a.href = signedIn ? '/dashboard' : a.dataset.account ? '/register' : '/signin'
     })
   }
 
