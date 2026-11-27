@@ -27,7 +27,7 @@ Organizers run the conference without being superusers: they see every talk prop
 
 ### Sign-in setup (`/setup`)
 
-`/setup` turns on GitHub and Google sign-in for the `users` collection. Only superusers can use it (it reuses the admin dashboard's session, so sign in at `/_/` first). To test the GitHub flow without github.com, run the mock and point a dev server at it (the overrides only work with `--dev`):
+`/setup` turns on GitHub and Google sign-in for the `users` collection. Each provider gets two callback URLs: `/api/oauth2-redirect` (the register page's popup sign-in) and `/api/_c/oauth/v1/provider/callback` (the MCP endpoint's sign-in page, from PocketOne's `oauth/v1` contract). A provider missing the second still works on the register page, but an agent signing in to `/mcp` with GitHub or Google gets `redirect_uri_mismatch`. Only superusers can use it (it reuses the admin dashboard's session, so sign in at `/_/` first). To test the GitHub flow without github.com, run the mock and point a dev server at it (the overrides only work with `--dev`):
 
 ```bash
 python3 dev/mock-github.py 8139
