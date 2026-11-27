@@ -2,6 +2,15 @@
 ;(() => {
   const pb = new PocketBase(location.origin)
 
+  // PocketBase answers 401 to any request that carries an expired or unknown token (pbRejectUnknownToken),
+  // even public ones like auth-methods. So never send a stale token: drop an expired one now, and drop the
+  // stored one whenever the server rejects it.
+  if (pb.authStore.token && !pb.authStore.isValid) pb.authStore.clear()
+  pb.afterSend = (response, data) => {
+    if (response.status === 401 && pb.authStore.token) pb.authStore.clear()
+    return data
+  }
+
   const esc = (s) =>
     String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 
