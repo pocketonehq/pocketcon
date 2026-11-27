@@ -393,7 +393,7 @@ button.btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
 .review .tally b { display: inline-block; min-width: 2.5rem; color: var(--accent-2); }
 
 /* Speaker avatars: agenda slots and the Speakers section */
-.avatar { flex: none; border-radius: 50%; object-fit: cover; background: var(--line); border: 2px solid var(--line); }
+.avatar { flex: none; border-radius: 50%; object-fit: cover; background: #fff; border: 2px solid var(--line); }
 .avatar-initials { display: inline-flex; align-items: center; justify-content: center; font-family: var(--mono); font-weight: 600; color: var(--bg); background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; }
 .slot-avatar { width: 48px; height: 48px; font-size: 0.95rem; }
 .speakers { border-top: 1px solid var(--line); padding: 3rem 0; }
