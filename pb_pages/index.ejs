@@ -41,6 +41,7 @@
       <li<%- item.id ? ' class="talk"' : '' %>>
         <% if (item.id) { %><a href="/talks/<%= item.id %>"><% } %>
         <span class="num"><%= String(i + 1).padStart(2, '0') %></span>
+        <% if (item.id) { %><%- include('avatar', { person: item, cls: 'slot-avatar' }) %><% } %>
         <div>
           <p class="tag"><%= item.kind %></p>
           <h3><%= item.title %></h3>
@@ -73,6 +74,26 @@
     <% }) %>
   </ol>
 </section>
+
+<% if (talks.length) { %>
+<section class="speakers" id="speakers">
+  <h2>Speakers</h2>
+  <ul class="speaker-grid">
+    <% talks.forEach((s) => { %>
+      <li class="speaker-card">
+        <a href="/talks/<%= s.id %>" class="speaker-head">
+          <%- include('avatar', { person: s, cls: 'speaker-avatar' }) %>
+          <div>
+            <h3><%= s.speaker %></h3>
+            <% if (s.headline) { %><p class="headline"><%= s.headline %></p><% } %>
+          </div>
+        </a>
+        <% if (s.bio) { %><p class="bio"><%= s.bio %></p><% } %>
+      </li>
+    <% }) %>
+  </ul>
+</section>
+<% } %>
 
 <section class="agenda after-hours" id="after-hours">
   <h2>After hours</h2>

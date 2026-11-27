@@ -391,3 +391,17 @@ button.btn:disabled { opacity: 0.6; cursor: wait; transform: none; }
 .review details summary { cursor: pointer; color: var(--muted); margin: 4px 0; }
 .review .tally { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
 .review .tally b { display: inline-block; min-width: 2.5rem; color: var(--accent-2); }
+
+/* Speaker avatars: agenda slots and the Speakers section */
+.avatar { flex: none; border-radius: 50%; object-fit: cover; background: var(--line); border: 2px solid var(--line); }
+.avatar-initials { display: inline-flex; align-items: center; justify-content: center; font-family: var(--mono); font-weight: 600; color: var(--bg); background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; }
+.slot-avatar { width: 48px; height: 48px; font-size: 0.95rem; }
+.speakers { border-top: 1px solid var(--line); padding: 3rem 0; }
+.speaker-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.speaker-card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+.speaker-head { display: flex; align-items: center; gap: 16px; color: var(--text); text-decoration: none; }
+.speaker-head:hover h3 { color: var(--accent-2); }
+.speaker-avatar { width: 72px; height: 72px; font-size: 1.3rem; }
+.speaker-card h3 { margin: 0; font-size: 1.15rem; }
+.speaker-card .headline { margin: 2px 0 0; color: var(--accent-2); font-size: 0.9rem; }
+.speaker-card .bio { margin: 14px 0 0; color: var(--muted); font-size: 0.95rem; white-space: pre-line; }
