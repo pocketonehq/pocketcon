@@ -1,16 +1,25 @@
 <%
   const event = ctx.resolve('event')
-  // The fixed program; accepted talk proposals (in the admin's sort order) go after the demo, then the open slot.
+  // The fixed program; accepted talk proposals (in the admin's sort order, Ben's live demo among them) go after the
+  // keynotes, then the open slot.
   const program = [
     { kind: 'Opening keynote', title: "PocketOne and what's next", speaker: 'Ben Allfree', note: 'Expect launches.' },
     { kind: 'Guest keynote', title: 'To be announced' },
-    { kind: 'Live demo', title: 'Zero to deployed with an AI agent', speaker: 'Ben Allfree', note: 'An app built and shipped with an agent, live.' },
   ]
   const talks = ctx.resolve('talks').accepted(ctx.app)
   const closing = [
     { kind: 'Panel', title: 'Agents and PocketBase in 2027', note: 'Your app as an MCP server, and agents inside your app.' },
     { kind: 'Closing', title: "Q&A and what's next", speaker: 'Ben Allfree' },
   ]
+  // Fixed slots borrow the avatar of the same speaker's accepted talk, if they have one.
+  const withAvatar = (item) => {
+    const t = item.speaker && talks.find((t) => t.speaker === item.speaker)
+    return t ? { ...item, avatar: t.avatar, initials: t.initials } : item
+  }
+  program.forEach((item, i) => (program[i] = withAvatar(item)))
+  closing.forEach((item, i) => (closing[i] = withAvatar(item)))
+  // One card per person in the Speakers section, even with several talks.
+  const speakers = talks.filter((t, i) => talks.findIndex((o) => o.speaker === t.speaker) === i)
   const agenda = program.concat(talks)
   const { ideas } = ctx.resolve('ideas')
 %>
@@ -41,7 +50,7 @@
       <li<%- item.id ? ' class="talk"' : '' %>>
         <% if (item.id) { %><a href="/talks/<%= item.id %>"><% } %>
         <span class="num"><%= String(i + 1).padStart(2, '0') %></span>
-        <% if (item.id) { %><%- include('avatar', { person: item, cls: 'slot-avatar' }) %><% } %>
+        <% if (item.initials) { %><%- include('avatar', { person: item, cls: 'slot-avatar' }) %><% } %>
         <div>
           <p class="tag"><%= item.kind %></p>
           <h3><%= item.title %></h3>
@@ -64,6 +73,7 @@
     <% closing.forEach((item, i) => { %>
       <li>
         <span class="num"><%= String(agenda.length + 2 + i).padStart(2, '0') %></span>
+        <% if (item.initials) { %><%- include('avatar', { person: item, cls: 'slot-avatar' }) %><% } %>
         <div>
           <p class="tag"><%= item.kind %></p>
           <h3><%= item.title %></h3>
@@ -75,11 +85,11 @@
   </ol>
 </section>
 
-<% if (talks.length) { %>
+<% if (speakers.length) { %>
 <section class="speakers" id="speakers">
   <h2>Speakers</h2>
   <ul class="speaker-grid">
-    <% talks.forEach((s) => { %>
+    <% speakers.forEach((s) => { %>
       <li class="speaker-card">
         <a href="/talks/<%= s.id %>" class="speaker-head">
           <%- include('avatar', { person: s, cls: 'speaker-avatar' }) %>
